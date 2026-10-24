@@ -1,0 +1,1444 @@
+{
+  "schemaVersion": 1,
+  "junie": {
+    "version": "3813.10",
+    "platform": "linux-aarch64",
+    "downloadUrl": "https://github.com/JetBrains/junie/releases/download/3813.10/junie-release-3813.10-linux-aarch64.zip",
+    "sha256": "508820f92a32cc2804da88d78ffe7be6b5163f146214da7c0e81eafcf029f921"
+  },
+  "applicationJarSha256": "7a607b5263cb6467d5cbd1a673704d94a09a083723e3f1ba298bc0d4bfac08b1",
+  "extractor": {
+    "decompiler": "CFR 0.152",
+    "sha256": "f686e8f3ded377d7bc87d216a90e9e9512df4156e75b06c655a16648ae8765b2"
+  },
+  "pricingUnit": "per-million-tokens",
+  "notes": "Token cost estimates from Junie's model definitions. Actual billing and model access depend on your account. Includes older and experimental models.",
+  "totalBundledModels": 95,
+  "models": [
+    {
+      "id": "Qwen/Qwen3.6-27B-FP8",
+      "provider": "AiPlatformVllm",
+      "sourceSymbol": "QWEN3_6_27B_AI_PLATFORM",
+      "pricing": {
+        "input": 0.15,
+        "output": 0.9,
+        "cacheRead": 0.015,
+        "cacheWrite": 0.15
+      },
+      "limits": {
+        "output": null,
+        "context": 262144
+      }
+    },
+    {
+      "id": "deepseek-v4.1-flash",
+      "provider": "AliCloud",
+      "sourceSymbol": "DEEPSEEK_V4_1_FLASH",
+      "pricing": {
+        "input": 0.2,
+        "output": 0.4,
+        "cacheRead": 0.04,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "qwen3.8-flash",
+      "provider": "AliCloud",
+      "sourceSymbol": "QWEN3_8_FLASH",
+      "pricing": {
+        "input": 0.15,
+        "output": 0.47,
+        "cacheRead": 0.016,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-3-5-haiku-20241022",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_HAIKU_3_5_2024_10_22",
+      "pricing": {
+        "input": 0.8,
+        "output": 4,
+        "cacheRead": 0.08,
+        "cacheWrite": 1
+      },
+      "limits": {
+        "output": 8192,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-3-5-sonnet-20241022",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_SONNET_2024_10_22",
+      "pricing": {
+        "input": 3,
+        "output": 15,
+        "cacheRead": 0.3,
+        "cacheWrite": 3.75
+      },
+      "limits": {
+        "output": 8182,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-3-7-sonnet-20250219",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_SONNET_3_7_2025_02_19",
+      "pricing": {
+        "input": 3,
+        "output": 15,
+        "cacheRead": 0.3,
+        "cacheWrite": 3.75
+      },
+      "limits": {
+        "output": 64000,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-3-haiku-20240307",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_HAIKU_3_0_2024_03_07",
+      "pricing": {
+        "input": 0.25,
+        "output": 1.25,
+        "cacheRead": 0.03,
+        "cacheWrite": 0.3
+      },
+      "limits": {
+        "output": 4096,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-3-sonnet-20240229",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_SONNET_2024_02_29",
+      "pricing": {
+        "input": 3,
+        "output": 15,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": 4096,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-fable-5",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_FABLE_5",
+      "pricing": {
+        "input": 10,
+        "output": 50,
+        "cacheRead": 1,
+        "cacheWrite": 12.5
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-fable-5-1",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_FABLE_5_1",
+      "pricing": {
+        "input": 10,
+        "output": 50,
+        "cacheRead": 0.25,
+        "cacheWrite": 12.5
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-haiku-4-5-20251001",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_HAIKU_4_5_2025_10_01",
+      "pricing": {
+        "input": 1,
+        "output": 5,
+        "cacheRead": 0.1,
+        "cacheWrite": 1.25
+      },
+      "limits": {
+        "output": 64000,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-haiku-5-5",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_HAIKU_5_5",
+      "pricing": {
+        "input": 0.1,
+        "output": 0.5,
+        "cacheRead": 0.01,
+        "cacheWrite": 0.125
+      },
+      "limits": {
+        "output": 64000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-opus-4-20250514",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_OPUS_4_2025_05_14",
+      "pricing": {
+        "input": 15,
+        "output": 75,
+        "cacheRead": 1.5,
+        "cacheWrite": 18.75
+      },
+      "limits": {
+        "output": 32000,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-opus-4-5-20251101",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_OPUS_4_5_2025_11_01",
+      "pricing": {
+        "input": 5,
+        "output": 25,
+        "cacheRead": 0.5,
+        "cacheWrite": 6.25
+      },
+      "limits": {
+        "output": 64000,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-opus-4-6",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_OPUS_4_6",
+      "pricing": {
+        "input": 5,
+        "output": 25,
+        "cacheRead": 0.5,
+        "cacheWrite": 6.25
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-opus-4-7",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_OPUS_4_7",
+      "pricing": {
+        "input": 5,
+        "output": 25,
+        "cacheRead": 0.5,
+        "cacheWrite": 6.25
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-opus-4-8",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_OPUS_4_8",
+      "pricing": {
+        "input": 5,
+        "output": 25,
+        "cacheRead": 0.5,
+        "cacheWrite": 6.25
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-opus-5",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_OPUS_5",
+      "pricing": {
+        "input": 5,
+        "output": 25,
+        "cacheRead": 0.5,
+        "cacheWrite": 6.25
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-opus-5-5",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_OPUS_5_5",
+      "pricing": {
+        "input": 4,
+        "output": 20,
+        "cacheRead": 0.2,
+        "cacheWrite": 5
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-sonnet-4-20250514",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_SONNET_4_2025_05_14",
+      "pricing": {
+        "input": 3,
+        "output": 15,
+        "cacheRead": 0.3,
+        "cacheWrite": 3.75
+      },
+      "limits": {
+        "output": 64000,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-sonnet-4-5-20250929",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_SONNET_4_5_2025_09_29",
+      "pricing": {
+        "input": 3,
+        "output": 15,
+        "cacheRead": 0.3,
+        "cacheWrite": 3.75
+      },
+      "limits": {
+        "output": 64000,
+        "context": 200000
+      }
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_SONNET_4_6",
+      "pricing": {
+        "input": 3,
+        "output": 15,
+        "cacheRead": 0.3,
+        "cacheWrite": 3.75
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-sonnet-5",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_SONNET_5",
+      "pricing": {
+        "input": 2,
+        "output": 10,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "claude-sonnet-5-5",
+      "provider": "Anthropic",
+      "sourceSymbol": "CLAUDE_SONNET_5_5",
+      "pricing": {
+        "input": 2,
+        "output": 10,
+        "cacheRead": 0.1,
+        "cacheWrite": 2.5
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "deepseek-chat",
+      "provider": "DeepSeek",
+      "sourceSymbol": "DEEPSEEK_CHAT",
+      "pricing": {
+        "input": 0.14,
+        "output": 0.28,
+        "cacheRead": 0.014,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": null
+      }
+    },
+    {
+      "id": "accounts/fireworks/models/glm-5p3-flash",
+      "provider": "Fireworks",
+      "sourceSymbol": "GLM_5_3_FLASH",
+      "pricing": {
+        "input": 0.15,
+        "output": 0.5,
+        "cacheRead": 0.03,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gemini-2.0-flash-thinking-exp-01-21",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_0_FLASH_THINKING",
+      "pricing": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-2.5-flash",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_5_FLASH",
+      "pricing": {
+        "input": 0.3,
+        "output": 2.5,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-2.5-flash-lite",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_5_FLASH_LITE",
+      "pricing": {
+        "input": 0.1,
+        "output": 0.4,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-2.5-flash-lite-preview-06-17",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_5_FLASH_LITE_PREVIEW",
+      "pricing": {
+        "input": 0.1,
+        "output": 0.4,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-2.5-flash-preview-04-17",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_5_FLASH_PREVIEW",
+      "pricing": {
+        "input": 0.15,
+        "output": 0.6,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-2.5-flash-preview-09-2025",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_5_FLASH_LITE_PREVIEW_09_2025",
+      "pricing": {
+        "input": 0.1,
+        "output": 0.4,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-2.5-pro",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_5_PRO",
+      "pricing": {
+        "input": 1.25,
+        "output": 10,
+        "cacheRead": 0.31,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-2.5-pro-exp-03-25",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_5_PRO_EXP",
+      "pricing": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-2.5-pro-preview-05-06",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_2_5_PRO_PREVIEW",
+      "pricing": {
+        "input": 1.25,
+        "output": 10,
+        "cacheRead": 0.31,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3-flash-preview",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_0_FLASH_PREVIEW",
+      "pricing": {
+        "input": 0.5,
+        "output": 3,
+        "cacheRead": 0.05,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3-pro-preview",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_0_PRO_PREVIEW",
+      "pricing": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3.1-flash-lite",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_1_FLASH_LITE",
+      "pricing": {
+        "input": 0.25,
+        "output": 1.5,
+        "cacheRead": 0.025,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3.1-pro-preview",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_1_PRO_PREVIEW",
+      "pricing": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3.5-flash",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_5_FLASH",
+      "pricing": {
+        "input": 1.5,
+        "output": 9,
+        "cacheRead": 0.15,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3.5-flash-lite",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_5_FLASH_LITE",
+      "pricing": {
+        "input": 0.25,
+        "output": 1.5,
+        "cacheRead": 0.025,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3.6-flash",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_6_FLASH",
+      "pricing": {
+        "input": 0.75,
+        "output": 3.75,
+        "cacheRead": 0.075,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3.7-flash",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_7_FLASH",
+      "pricing": {
+        "input": 0.4,
+        "output": 2.4,
+        "cacheRead": 0.04,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3.8-flash",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_3_8_FLASH",
+      "pricing": {
+        "input": 0.75,
+        "output": 3.75,
+        "cacheRead": 0.075,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-4-argon",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_4_ARGON",
+      "pricing": {
+        "input": 2,
+        "output": 10,
+        "cacheRead": 0.1,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-exp-1206",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_1206",
+      "pricing": {
+        "input": 0.04,
+        "output": 0.15,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-3.5-transcribe",
+      "provider": "GoogleAiStudio",
+      "sourceSymbol": "GEMINI_3_5_TRANSCRIBE",
+      "pricing": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 2,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": null
+      }
+    },
+    {
+      "id": "hetzner/Qwen/Qwen3.6-27B-FP8",
+      "provider": "LiteLLM",
+      "sourceSymbol": "QWEN3_6_27B_LITELLM",
+      "pricing": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 262144
+      }
+    },
+    {
+      "id": "hetzner/openai/gpt-oss-120b",
+      "provider": "LiteLLM",
+      "sourceSymbol": "GPT_OSS_120B_LITELLM",
+      "pricing": {
+        "input": 0.1,
+        "output": 0.1,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": null
+      }
+    },
+    {
+      "id": "muse-spark-1.1",
+      "provider": "Meta",
+      "sourceSymbol": "MUSE_SPARK_1_1",
+      "pricing": {
+        "input": 1.25,
+        "output": 4.25,
+        "cacheRead": 0.15,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "muse-spark-1.2",
+      "provider": "Meta",
+      "sourceSymbol": "MUSE_SPARK_1_2",
+      "pricing": {
+        "input": 1.25,
+        "output": 4.25,
+        "cacheRead": 0.15,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "muse-spark-1.3",
+      "provider": "Meta",
+      "sourceSymbol": "MUSE_SPARK_1_3",
+      "pricing": {
+        "input": 1.25,
+        "output": 4.25,
+        "cacheRead": 0.15,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "devstral-small-2505",
+      "provider": "Mistral",
+      "sourceSymbol": "DEVSTRAL_SMALL",
+      "pricing": {
+        "input": 0.1,
+        "output": 0.3,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 131072
+      }
+    },
+    {
+      "id": "kimi-k2-0905-preview",
+      "provider": "Moonshot",
+      "sourceSymbol": "KIMI_K2_MOONSHOT",
+      "pricing": {
+        "input": 0.5,
+        "output": 2.4,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 262144
+      }
+    },
+    {
+      "id": "kimi-k2.5",
+      "provider": "Moonshot",
+      "sourceSymbol": "KIMI_K2_5_MOONSHOT",
+      "pricing": {
+        "input": 0.6,
+        "output": 3,
+        "cacheRead": 0.1,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 262144
+      }
+    },
+    {
+      "id": "critic_latest",
+      "provider": "Nebius",
+      "sourceSymbol": "NEBIUS_CRITIC_LATEST",
+      "pricing": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": null
+      }
+    },
+    {
+      "id": "deepseek-ai/DeepSeek-V3-0324",
+      "provider": "NebiusProd",
+      "sourceSymbol": "DEEPSEEK_CHAT_NEBIUS",
+      "pricing": {
+        "input": 0.5,
+        "output": 1.5,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": null
+      }
+    },
+    {
+      "id": "zai-org/GLM-4.7-FP8",
+      "provider": "NebiusProd",
+      "sourceSymbol": "GLM_47_NEBIUS",
+      "pricing": {
+        "input": 0.4,
+        "output": 2,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": null
+      }
+    },
+    {
+      "id": "gpt-3.5-turbo",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_3_5_TURBO",
+      "pricing": {
+        "input": 0.5,
+        "output": 1.5,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 16385
+      }
+    },
+    {
+      "id": "gpt-4-turbo-2024-04-09",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_TURBO_2024_04_09",
+      "pricing": {
+        "input": 10,
+        "output": 30,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 128000
+      }
+    },
+    {
+      "id": "gpt-4.1-2025-04-14",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_1_2025_04_14",
+      "pricing": {
+        "input": 2,
+        "output": 8,
+        "cacheRead": 0.5,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1047576
+      }
+    },
+    {
+      "id": "gpt-4.1-mini-2025-04-14",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_1_MINI_2025_04_14",
+      "pricing": {
+        "input": 0.4,
+        "output": 1.6,
+        "cacheRead": 0.1,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1047576
+      }
+    },
+    {
+      "id": "gpt-4.1-nano-2025-04-14",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_1_NANO_2025_04_14",
+      "pricing": {
+        "input": 0.1,
+        "output": 0.4,
+        "cacheRead": 0.025,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1047576
+      }
+    },
+    {
+      "id": "gpt-4.5-preview-2025-02-27",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_5_PREVIEW_2025_02_27",
+      "pricing": {
+        "input": 75,
+        "output": 150,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 128000
+      }
+    },
+    {
+      "id": "gpt-4o",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_O",
+      "pricing": {
+        "input": 5,
+        "output": 15,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 128000
+      }
+    },
+    {
+      "id": "gpt-4o-2024-08-06",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_O_2024_08_06",
+      "pricing": {
+        "input": 2.5,
+        "output": 10,
+        "cacheRead": 1.25,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 128000
+      }
+    },
+    {
+      "id": "gpt-4o-2024-11-20",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_O_2024_11_20",
+      "pricing": {
+        "input": 2.5,
+        "output": 10,
+        "cacheRead": 1.25,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 128000
+      }
+    },
+    {
+      "id": "gpt-4o-mini-2024-07-18",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_O_MINI_2024_07_18",
+      "pricing": {
+        "input": 0.15,
+        "output": 0.6,
+        "cacheRead": 0.075,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 128000
+      }
+    },
+    {
+      "id": "gpt-4o-transcribe",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_4_O_TRANSCRIBE",
+      "pricing": {
+        "input": 2.5,
+        "output": 10,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": null
+      }
+    },
+    {
+      "id": "gpt-5-2025-08-07",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_2025_08_07",
+      "pricing": {
+        "input": 1.25,
+        "output": 10,
+        "cacheRead": 0.125,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5-mini-2025-08-07",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_MINI_2025_08_07",
+      "pricing": {
+        "input": 0.25,
+        "output": 2,
+        "cacheRead": 0.025,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5-nano-2025-08-07",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_NANO_2025_08_07",
+      "pricing": {
+        "input": 0.05,
+        "output": 0.4,
+        "cacheRead": 0.005,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5.1-2025-11-13",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_1_2025_11_13",
+      "pricing": {
+        "input": 1.25,
+        "output": 10,
+        "cacheRead": 0.125,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5.1-codex",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_1_CODEX",
+      "pricing": {
+        "input": 1.25,
+        "output": 10,
+        "cacheRead": 0.125,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5.1-codex-max",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_1_CODEX_MAX",
+      "pricing": {
+        "input": 1.25,
+        "output": 10,
+        "cacheRead": 0.125,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5.1-codex-mini",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_1_MINI_CODEX",
+      "pricing": {
+        "input": 0.25,
+        "output": 2,
+        "cacheRead": 0.025,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5.2-2025-12-11",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_2",
+      "pricing": {
+        "input": 1.75,
+        "output": 14,
+        "cacheRead": 0.175,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5.2-codex",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_2_CODEX",
+      "pricing": {
+        "input": 1.75,
+        "output": 14,
+        "cacheRead": 0.175,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5.3-codex",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_3_CODEX",
+      "pricing": {
+        "input": 1.75,
+        "output": 14,
+        "cacheRead": 0.175,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 400000
+      }
+    },
+    {
+      "id": "gpt-5.4",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_4",
+      "pricing": {
+        "input": 2.5,
+        "output": 15,
+        "cacheRead": 0.25,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-5.4-mini",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_4_MINI",
+      "pricing": {
+        "input": 0.75,
+        "output": 4.5,
+        "cacheRead": 0.075,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-5.4-nano",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_4_NANO",
+      "pricing": {
+        "input": 0.2,
+        "output": 1.25,
+        "cacheRead": 0.02,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-5.5",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_5",
+      "pricing": {
+        "input": 5,
+        "output": 30,
+        "cacheRead": 0.5,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-5.6-luna",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_6_LUNA",
+      "pricing": {
+        "input": 0.2,
+        "output": 1.2,
+        "cacheRead": 0.02,
+        "cacheWrite": 0.25
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-5.6-sol",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_6_SOL",
+      "pricing": {
+        "input": 5,
+        "output": 30,
+        "cacheRead": 0.5,
+        "cacheWrite": 6.25
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-5.6-terra",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_5_6_TERRA",
+      "pricing": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-6-astra",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_6_ASTRA",
+      "pricing": {
+        "input": 10,
+        "output": 50,
+        "cacheRead": 1,
+        "cacheWrite": 12.5
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-6-luna",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_6_LUNA",
+      "pricing": {
+        "input": 0.1,
+        "output": 0.5,
+        "cacheRead": 0.01,
+        "cacheWrite": 0.125
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-6-sol",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_6_SOL",
+      "pricing": {
+        "input": 2,
+        "output": 10,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-6.1-sol",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_6_1_SOL",
+      "pricing": {
+        "input": 2,
+        "output": 10,
+        "cacheRead": 0.1,
+        "cacheWrite": 2.5
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "grok-4.3",
+      "provider": "XAI",
+      "sourceSymbol": "GROK_4_3",
+      "pricing": {
+        "input": 1.25,
+        "output": 2.5,
+        "cacheRead": 0.2,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "grok-4.5",
+      "provider": "XAI",
+      "sourceSymbol": "GROK_4_5",
+      "pricing": {
+        "input": 2,
+        "output": 6,
+        "cacheRead": 0.3,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 500000
+      }
+    },
+    {
+      "id": "grok-4.6",
+      "provider": "XAI",
+      "sourceSymbol": "GROK_4_6",
+      "pricing": {
+        "input": 2,
+        "output": 6,
+        "cacheRead": 0.5,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 500000
+      }
+    },
+    {
+      "id": "grok-4.7",
+      "provider": "XAI",
+      "sourceSymbol": "GROK_4_7",
+      "pricing": {
+        "input": 2,
+        "output": 6,
+        "cacheRead": 0.5,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 500000
+      }
+    },
+    {
+      "id": "grok-code-fast-1-0825",
+      "provider": "XAI",
+      "sourceSymbol": "GROK_CODE_FAST_1",
+      "pricing": {
+        "input": 0.2,
+        "output": 1.5,
+        "cacheRead": 0.01,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 256000
+      }
+    }
+  ]
+}
