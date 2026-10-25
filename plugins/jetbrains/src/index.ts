@@ -2,7 +2,8 @@ import { Plugin, Integration } from "@opencode/plugin/effect"
 import { Cause, DateTime, Effect, Exit, Stream } from "effect"
 import type { ConnectionInfo } from "@opencode/client"
 import { browserLogin, manualLogin, TokenClient } from "./auth.ts"
-import { BalanceService, type Account } from "./balance.ts"
+import type { Account } from "./account.ts"
+import { StatusService } from "./status-service.ts"
 import { MODEL_ID, PROVIDER_ID } from "./constants.ts"
 import { JetBrainsError, safeError } from "./errors.ts"
 import { prepareRequest } from "./gateway.ts"
@@ -117,22 +118,24 @@ export default Plugin.define({
       const current = await Effect.runPromise(ctx.integration.connection.active(PROVIDER_ID))
       if (!current || identity(current) !== identity(connection)) throw new JetBrainsError("The active JetBrains account changed. Retry the request.")
       return {
-        key: identity(connection), access,
+        key: identity(connection), access, ...(credential.type === "oauth" ? { oauth: credential } : {}),
         label: connection.type === "credential" ? connection.label.replace(/[\x00-\x1f\x7f]/g, "").slice(0, 100) : "Environment token",
       }
     }
-    const balance = new BalanceService(getAccount)
+    const accountStatus = new StatusService(getAccount, () => {
+      if (!disposed) void Effect.runPromise(registration.events.emit("updated", {})).catch(() => {})
+    })
     const status = async (modelID = MODEL_ID, force = false): Promise<StatusSnapshot> => {
       const selected = pricing.get(modelID)
       if (!selected) throw new JetBrainsError("Unknown JetBrains model ID.")
       return {
-        ...await balance.get(force), modelID, dollarCost: selected.prices ? "estimated" : "unavailable",
+        ...await accountStatus.get(force), modelID, dollarCost: selected.prices ? "estimated" : "unavailable",
         pricingSource: selected.source, pricingVersion: selected.version, pricingError: selected.error,
         authStage, authError,
       }
     }
 
-    yield* ctx.rpc.register(JetBrains, {
+    const registration = yield* ctx.rpc.register(JetBrains, {
       // RPC has already validated the input schema.
       status: (input) => Effect.promise(() => status((input as { modelID?: string }).modelID)),
       refresh: (input) => Effect.promise(() => status((input as { modelID?: string }).modelID, true)),
@@ -150,7 +153,7 @@ export default Plugin.define({
       if (!event.response.ok || !event.response.body) return
       const body = event.response.body.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({
         transform(chunk, controller) { controller.enqueue(chunk) },
-        flush() { if (!disposed) void balance.get().catch(() => {}) },
+        flush() { if (!disposed) void accountStatus.get().catch(() => {}) },
       }))
       event.response = new Response(body, {
         status: event.response.status, statusText: event.response.statusText, headers: event.response.headers,
@@ -167,7 +170,7 @@ export default Plugin.define({
 
     yield* ctx.event.subscribe().pipe(
       Stream.filter((event) => event.type === "credential.switched" && event.data.integrationID === PROVIDER_ID),
-      Stream.runForEach(() => Effect.promise(async () => { await balance.get() })),
+      Stream.runForEach(() => Effect.promise(async () => { await accountStatus.get() })),
       Effect.forkScoped,
     )
   }),

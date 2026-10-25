@@ -1,7 +1,8 @@
 import { Rpc } from "@opencode/plugin/rpc"
 import type { BalanceSnapshot } from "./balance.ts"
+import type { QuotaView } from "./quota-cache.ts"
 
-export type StatusSnapshot = BalanceSnapshot & {
+export type StatusSnapshot = BalanceSnapshot & QuotaView & {
   modelID: string
   dollarCost: "unavailable" | "estimated"
   pricingSource: "model-override" | "global-override" | "junie" | null
@@ -23,6 +24,17 @@ const status = {
     rawBalance: { type: ["number", "null"] },
     unit: { type: ["string", "null"] },
     license: { type: ["string", "null"] },
+    quotaError: { type: ["string", "null"] },
+    quotaState: { type: "string", enum: ["loading", "ready", "stale", "error"] },
+    quotaUpdatedAt: { type: ["number", "null"] },
+    nextRefill: { type: ["number", "null"] },
+    refillAmount: { type: ["number", "null"] },
+    refillPeriodMs: { type: ["number", "null"] },
+    subscriptionBalance: { type: ["number", "null"] },
+    subscriptionMaximum: { type: ["number", "null"] },
+    topUpBalance: { type: ["number", "null"] },
+    topUpMaximum: { type: ["number", "null"] },
+    validUntil: { type: ["number", "null"] },
     updatedAt: { type: ["number", "null"] },
     error: { type: ["string", "null"] },
     dollarCost: { type: "string", enum: ["unavailable", "estimated"] },
@@ -32,7 +44,7 @@ const status = {
     authStage: { type: ["string", "null"] },
     authError: { type: ["string", "null"] },
   },
-  required: ["modelID", "connected", "account", "state", "active", "balance", "rawBalance", "unit", "license", "updatedAt", "error", "dollarCost", "pricingSource", "pricingVersion", "pricingError", "authStage", "authError"],
+  required: ["modelID", "connected", "account", "state", "active", "balance", "rawBalance", "unit", "license", "updatedAt", "error", "dollarCost", "pricingSource", "pricingVersion", "pricingError", "authStage", "authError", "quotaError", "quotaState", "quotaUpdatedAt", "nextRefill", "refillAmount", "refillPeriodMs", "subscriptionBalance", "subscriptionMaximum", "topUpBalance", "topUpMaximum", "validUntil"],
   additionalProperties: false,
 } as const
 
@@ -46,7 +58,9 @@ export const JetBrains = Rpc.define({
     status: { input, output: status },
     refresh: { input, output: status },
   },
-  events: {},
+  events: {
+    updated: { schema: { type: "object", additionalProperties: false } },
+  },
 })
 
 export function readStatus(value: unknown): StatusSnapshot {

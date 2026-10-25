@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto"
 import { ANTHROPIC_HEADERS, GATEWAY, HEADERS, PROVIDER_ID } from "./constants.ts"
 import { catalogModel } from "./catalog.ts"
-import type { Account } from "./balance.ts"
+import type { Account } from "./account.ts"
 import { JetBrainsError } from "./errors.ts"
 
 function hash(value: string): string {

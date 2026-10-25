@@ -13,7 +13,10 @@ test("returns disconnected without fetching", async () => {
 test("deduplicates credits requests across service instances and redacts extra fields", async () => {
   const user = account()
   let calls = 0
-  const fetcher = async () => { calls++; await Promise.resolve(); return success() }
+  const fetcher = async (url: string | URL | Request) => {
+    if (!String(url).endsWith("/auth/test")) return new Response(null, { status: 400 })
+    calls++; await Promise.resolve(); return success()
+  }
   const a = new BalanceService(async () => user, fetcher)
   const b = new BalanceService(async () => user, fetcher)
   const [first, second] = await Promise.all([a.get(), b.get()])
@@ -31,7 +34,8 @@ test("rate-limit backoff retains a stale balance and cannot be bypassed by refre
   const user = account()
   let time = 100_000
   let calls = 0
-  const service = new BalanceService(async () => user, async () => {
+  const service = new BalanceService(async () => user, async (url) => {
+    if (!String(url).endsWith("/auth/test")) return new Response(null, { status: 400 })
     calls++
     return calls === 1 ? success() : new Response("private-error-details", { status: 429, headers: { "Retry-After": "120" } })
   }, () => time)
@@ -52,7 +56,10 @@ test("rate-limit backoff retains a stale balance and cannot be bypassed by refre
 test("account switching and logout never reuse another account's balance", async () => {
   let user: ReturnType<typeof account> | undefined = account()
   let calls = 0
-  const service = new BalanceService(async () => user, async () => { calls++; return success() })
+  const service = new BalanceService(async () => user, async (url) => {
+    if (!String(url).endsWith("/auth/test")) return new Response(null, { status: 400 })
+    calls++; return success()
+  })
   await service.get()
   user = account()
   await service.get()
@@ -79,4 +86,16 @@ test("invalid responses and transport errors never expose raw data", async () =>
   expect(result.error).not.toContain("private-secret")
   const invalid = new BalanceService(async () => account(), async () => Response.json({ active: true, balanceLeft: "private-secret" }))
   expect((await invalid.get()).error).toBe("Credit service returned an invalid response.")
+})
+
+test("trial balance reporting never makes optional metadata requests", async () => {
+  const calls: string[] = []
+  const user = account()
+  const service = new BalanceService(async () => user, async url => {
+    calls.push(String(url))
+    return Response.json({ active: true, balanceLeft: 5, balanceUnit: "USD", licenseType: "TRIAL" })
+  })
+  expect(await service.get()).toMatchObject({ state: "ready", balance: 5, unit: "USD", license: "TRIAL", error: null })
+  expect(calls).toHaveLength(1)
+  expect(calls[0]).toEndWith("/auth/test")
 })

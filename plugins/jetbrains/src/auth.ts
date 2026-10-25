@@ -4,6 +4,9 @@ import type { Credential } from "@opencode/plugin"
 import { Integration } from "@opencode/plugin"
 import { CLIENT_ID, LOGIN_TIMEOUT, LOGIN_URL, MANUAL_REDIRECT, SCOPES, TOKEN_URL } from "./constants.ts"
 import { JetBrainsError } from "./errors.ts"
+import { CredentialRenewal } from "./renewal.ts"
+import { readQuotaAuth } from "./quota-auth.ts"
+import { jwtExpiration } from "./jwt.ts"
 
 export type Fetch = (input: string | URL | Request, init?: RequestInit) => Promise<Response>
 
@@ -27,14 +30,12 @@ export function equalState(actual: string | null, expected: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b)
 }
 
-// Share refreshes across plugin instances to avoid rotating the same token twice.
-type RefreshEntry = { until: number; promise: Promise<Credential.OAuth> }
-const refreshKey = Symbol.for("opencode.jetbrains.refresh.v1")
-const shared = globalThis as typeof globalThis & { [refreshKey]?: Map<string, RefreshEntry> }
-const refreshes = shared[refreshKey] ??= new Map<string, RefreshEntry>()
-
 export class TokenClient {
-  constructor(private readonly fetcher: Fetch = fetch, private readonly now = Date.now) {}
+  private readonly renewal: CredentialRenewal
+
+  constructor(private readonly fetcher: Fetch = fetch, private readonly now = Date.now) {
+    this.renewal = new CredentialRenewal(fetcher, now)
+  }
 
   private async exchange(fields: Record<string, string>, methodID: string, old?: Credential.OAuth, signal?: AbortSignal): Promise<Credential.OAuth> {
     let response: Response
@@ -80,10 +81,23 @@ export class TokenClient {
     if (invalid.length) {
       throw new JetBrainsError(`JetBrains token response is missing required fields or has invalid values: ${invalid.join(", ")}.`)
     }
-    return {
+    const expires = this.now() + (seconds as number) * 1000
+    const credential: Credential.OAuth = {
       type: "oauth", methodID: Integration.MethodID.make(methodID),
-      access: data.access_token as string, refresh: refresh!, expires: this.now() + (seconds as number) * 1000,
+      access: data.access_token as string, refresh: refresh!, expires,
+      metadata: { ...old?.metadata, jetbrainsInferenceExpires: expires },
     }
+    const previousID = old && readQuotaAuth(old)?.idToken
+    // Refresh responses may omit id_token. Reuse only an unexpired token from
+    // the same saved credential, never mask an explicitly invalid replacement.
+    const idToken = data.id_token === undefined && previousID && (jwtExpiration(previousID) ?? 0) > this.now()
+      ? previousID : data.id_token
+    // A full refresh already tried to replace this ID token. Retry at its actual
+    // expiry instead of refreshing inference again inside the early-refresh window.
+    return this.renewal.prepare({ ...credential, metadata: {
+      ...credential.metadata,
+      jetbrainsIDTokenRefreshAfter: data.id_token === undefined && idToken === previousID && previousID ? jwtExpiration(previousID) : null,
+    } }, idToken, signal)
   }
 
   code(code: string, verifier: string, redirect: string, methodID: string, signal?: AbortSignal) {
@@ -92,16 +106,9 @@ export class TokenClient {
   }
 
   refresh(credential: Credential.OAuth): Promise<Credential.OAuth> {
-    const key = createHash("sha256").update(credential.refresh).digest("hex")
-    const now = this.now()
-    for (const [id, entry] of refreshes) if (entry.until < now) refreshes.delete(id)
-    const existing = refreshes.get(key)
-    if (existing) return existing.promise
-    const promise = this.exchange({ grant_type: "refresh_token", refresh_token: credential.refresh }, credential.methodID, credential)
-    const entry = { until: Infinity, promise }
-    refreshes.set(key, entry)
-    void promise.then(() => { entry.until = this.now() + 5 * 60_000 }, () => { refreshes.delete(key) })
-    return promise
+    return this.renewal.refresh(credential, () => this.exchange(
+      { grant_type: "refresh_token", refresh_token: credential.refresh }, credential.methodID, credential,
+    ))
   }
 }
 

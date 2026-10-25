@@ -38,7 +38,7 @@ describe("OAuth", () => {
       return Response.json({ access_token: "new-access", refresh_token: "new-refresh", expires_in: 3600, token_type: "Bearer", id_token: "unused-identity" })
     }
     const result = await new TokenClient(fetcher, () => 1000).code("example-code", "example-verifier", MANUAL_REDIRECT, "manual")
-    expect(result).toEqual({ type: "oauth", methodID: Integration.MethodID.make("manual"), access: "new-access", refresh: "new-refresh", expires: 3_601_000 })
+    expect(result).toMatchObject({ type: "oauth", methodID: Integration.MethodID.make("manual"), access: "new-access", refresh: "new-refresh", expires: 3_601_000 })
     expect(JSON.stringify(result)).not.toContain("unused-identity")
   })
 

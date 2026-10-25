@@ -1,8 +1,8 @@
 import { GATEWAY, HEADERS } from "./constants.ts"
 import type { Fetch } from "./auth.ts"
 import { JetBrainsError, retryAfter, safeError } from "./errors.ts"
+import type { Account, AccountResolver } from "./account.ts"
 
-export type Account = { key: string; label: string; access: string }
 export type BalanceSnapshot = {
   connected: boolean
   account: string | null
@@ -21,13 +21,13 @@ export function emptyBalance(connected = false, account: string | null = null): 
 }
 
 type Entry = { snapshot: BalanceSnapshot; nextFetch: number; pending?: Promise<BalanceSnapshot> }
-const symbol = Symbol.for("opencode.jetbrains.balance.v2")
+const symbol = Symbol.for("opencode.jetbrains.balance.v6")
 const shared = globalThis as typeof globalThis & { [symbol]?: Map<string, Entry> }
 const entries = shared[symbol] ??= new Map<string, Entry>()
 
 export class BalanceService {
   constructor(
-    private readonly account: () => Promise<Account | undefined>,
+    private readonly account: AccountResolver,
     private readonly fetcher: Fetch = fetch,
     private readonly now = Date.now,
     private readonly interval = 60_000,
@@ -39,6 +39,10 @@ export class BalanceService {
       return { ...emptyBalance(true), error: safeError(error) }
     }
     if (!account) return emptyBalance()
+    return this.getFor(account, force)
+  }
+
+  async getFor(account: Account, force = false): Promise<BalanceSnapshot> {
     let entry = entries.get(account.key)
     if (!entry) {
       entry = { snapshot: emptyBalance(true, account.label), nextFetch: 0 }
