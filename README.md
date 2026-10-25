@@ -4,12 +4,19 @@ OpenCode plugin for using models through your JetBrains AI plan/subscription.
 
 Supported model IDs (under the `jetbrains` provider):
 
-- `gpt-5.6-luna`, `gpt-5.6-terra`, `gpt-5.6-sol`
-- `gpt-6-luna`, `gpt-6-sol`, `gpt-6-astra`
+- `gpt-5.6-luna`
+- `gpt-5.6-terra`
+- `gpt-5.6-sol`
+- `gpt-6-luna`
+- `gpt-6-sol`
+- `gpt-6-astra`
 - `gpt-6.1-sol`
-- `claude-sonnet-5`, `claude-opus-5`
+- `claude-sonnet-5`
+- `claude-opus-5`
 - `claude-fable-5-1`
-- `claude-haiku-5-5`, `claude-sonnet-5-5`, `claude-opus-5-5`
+- `claude-haiku-5-5`
+- `claude-sonnet-5-5`
+- `claude-opus-5-5`
 
 Access depends on your JetBrains account.
 All models share one login and credit balance.
