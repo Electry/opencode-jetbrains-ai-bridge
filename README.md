@@ -63,6 +63,9 @@ next refill, and update time. Plan details depend on account availability.
 
 Use **Refresh** in the dialog or press `Ctrl+R` to refresh balance and plan details.
 
+Balance updates every five minutes and after completed responses. Plan details
+update hourly. Refresh failures may delay updates.
+
 The balance includes usage from other apps on your account. OpenCode's dollar
 costs use Junie rate estimates. Actual billing may differ. Dollar estimates have
 no direct conversion to JetBrains credits.

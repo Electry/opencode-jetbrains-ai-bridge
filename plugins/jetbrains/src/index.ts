@@ -4,6 +4,7 @@ import type { ConnectionInfo } from "@opencode/client"
 import { browserLogin, manualLogin, TokenClient } from "./auth.ts"
 import type { Account } from "./account.ts"
 import { StatusService } from "./status-service.ts"
+import { observeResponseCompletion } from "./response-completion.ts"
 import { MODEL_ID, PROVIDER_ID } from "./constants.ts"
 import { JetBrainsError, safeError } from "./errors.ts"
 import { prepareRequest } from "./gateway.ts"
@@ -149,14 +150,8 @@ export default Plugin.define({
     }), { providerID: PROVIDER_ID })
 
     yield* ctx.session.hook("http.response", (event) => Effect.sync(() => {
-      // Check credits after OpenCode finishes reading a successful response.
-      if (!event.response.ok || !event.response.body) return
-      const body = event.response.body.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({
-        transform(chunk, controller) { controller.enqueue(chunk) },
-        flush() { if (!disposed) void accountStatus.get().catch(() => {}) },
-      }))
-      event.response = new Response(body, {
-        status: event.response.status, statusText: event.response.statusText, headers: event.response.headers,
+      event.response = observeResponseCompletion(event.response, () => {
+        if (!disposed) return accountStatus.refreshBalance()
       })
     }), { providerID: PROVIDER_ID })
 

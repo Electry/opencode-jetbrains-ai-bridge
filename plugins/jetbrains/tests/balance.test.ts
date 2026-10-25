@@ -40,7 +40,7 @@ test("rate-limit backoff retains a stale balance and cannot be bypassed by refre
     return calls === 1 ? success() : new Response("private-error-details", { status: 429, headers: { "Retry-After": "120" } })
   }, () => time)
   await service.get()
-  time += 60_001
+  time += 5 * 60_000 + 1
   const stale = await service.get()
   expect(stale.state).toBe("stale")
   expect(stale.balance).toBe(123.45)

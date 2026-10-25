@@ -10,7 +10,7 @@ export class StatusService {
   private readonly quota: QuotaCache
   private readonly balance: BalanceService
 
-  constructor(private readonly account: AccountResolver, changed: () => void, fetcher: Fetch = fetch, now = Date.now) {
+  constructor(private readonly account: AccountResolver, private readonly changed: () => void, fetcher: Fetch = fetch, now = Date.now) {
     this.quota = new QuotaCache(new QuotaService(fetcher, now), changed, now)
     this.balance = new BalanceService(account, fetcher, now)
   }
@@ -25,6 +25,13 @@ export class StatusService {
     } catch (error) {
       return { ...emptyBalance(true), ...emptyQuota(), error: safeError(error), quotaState: "error" as const, quotaUpdatedAt: null }
     }
+  }
+
+  async refreshBalance(): Promise<void> {
+    const account = await this.account()
+    if (!account) return
+    await this.balance.getFor(account, true)
+    this.changed()
   }
 
 }

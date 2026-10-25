@@ -30,7 +30,7 @@ export class BalanceService {
     private readonly account: AccountResolver,
     private readonly fetcher: Fetch = fetch,
     private readonly now = Date.now,
-    private readonly interval = 60_000,
+    private readonly interval = 5 * 60_000,
   ) {}
 
   async get(force = false): Promise<BalanceSnapshot> {
@@ -100,7 +100,7 @@ export class BalanceService {
       entry.nextFetch = this.now() + this.interval
     } catch (error) {
       entry.snapshot = { ...entry.snapshot, state: entry.snapshot.updatedAt === null ? "error" : "stale", error: safeError(error) }
-      entry.nextFetch = this.now() + (error instanceof JetBrainsError && error.retryAfter ? error.retryAfter : this.interval)
+      entry.nextFetch = this.now() + (error instanceof JetBrainsError && error.retryAfter ? error.retryAfter : 60_000)
     }
     return this.view(entry, account.label)
   }

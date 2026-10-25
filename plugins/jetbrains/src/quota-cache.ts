@@ -23,7 +23,7 @@ export class QuotaCache {
   private readonly entries = entries
   private readonly observed = new WeakSet<Promise<void>>()
 
-  constructor(private readonly source: Source, private readonly changed: () => void = () => {}, private readonly now = Date.now, private readonly interval = 60_000) {}
+  constructor(private readonly source: Source, private readonly changed: () => void = () => {}, private readonly now = Date.now, private readonly interval = 60 * 60_000) {}
 
   get(account: Account, force = false): QuotaView {
     const id = key(account)
@@ -71,12 +71,12 @@ export class QuotaCache {
         entry.view = { ...next, quotaState: "ready", quotaUpdatedAt: this.now() }
       }
       entry.identity = identity
-      entry.nextFetch = Math.max(this.now() + this.interval, retryAt ?? 0)
+      entry.nextFetch = Math.max(this.now() + (next.quotaError ? 60_000 : this.interval), retryAt ?? 0)
     } catch (error) {
       entry.view = { ...entry.view, quotaError: error instanceof JetBrainsError ? safeError(error) : "Plan details request failed. Try again later.",
         quotaState: entry.view.quotaUpdatedAt === null ? "error" : "stale" }
       const delay = error instanceof JetBrainsError ? error.retryAfter ?? 0 : 0
-      entry.nextFetch = this.now() + Math.max(this.interval, delay)
+      entry.nextFetch = this.now() + Math.max(60_000, delay)
     }
   }
 }
