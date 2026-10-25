@@ -158,3 +158,8 @@ Run `/jetbrains` for setup errors. Existing logins may need an automatic
 refresh before plan details appear. Reconnect through `/connect` to prepare them
 immediately. Trial accounts and accounts with multiple eligible plans may have
 limited details.
+
+## License
+
+Licensed under [GPL-3.0-or-later](LICENSE).
+Not affiliated with or endorsed by JetBrains.
