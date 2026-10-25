@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import { emptyBalance as emptyCoreBalance } from "../src/balance.ts"
 import { emptyQuota } from "../src/quota.ts"
-import { balanceText, sidebarBalanceText, refillDate, refillRate, relativeTime, statusText } from "../src/presentation.ts"
+import { balanceText, sidebarBalanceText, refillDate, refillRate, relativeTime, statusText, statusContent } from "../src/presentation.ts"
 import { readQuota } from "../src/quota.ts"
 
 function emptyBalance(...args: Parameters<typeof emptyCoreBalance>) {
@@ -65,11 +65,15 @@ test("command includes plan details and precise timestamps, but omits missing me
   const status = { ...emptyBalance(true, "Test"), balance: 64.4, unit: "CREDITS", license: "AIP", active: true,
     modelID: "test", dollarCost: "unavailable" as const, pricingSource: null, pricingVersion: null, pricingError: null, authStage: null, authError: null }
   expect(statusText(status)).toContain("  Remaining: 64.40000 credits")
+  const content = statusContent(status)
+  expect(content.map(part => part.text).join("")).toBe(statusText(status))
+  expect(content.filter(part => part.bold).map(part => part.text)).toEqual(["Credits", "Status"])
+  expect(statusContent({ ...status, balance: null }).filter(part => part.bold).map(part => part.text)).toEqual(["Credits", "Status"])
+  expect(statusContent({ ...status, connected: false }).some(part => part.bold)).toBe(false)
   expect(statusText(status)).not.toContain("Refill:")
   const report = statusText({ ...status, refillAmount: 70, refillPeriodMs: 2_592_000_000, nextRefill: new Date(2026, 10, 12, 13, 45, 7).getTime(),
     subscriptionBalance: 64.4, subscriptionMaximum: 70, topUpBalance: 5, topUpMaximum: 10 })
   expect(report).toMatch(/Refill:\s+70\.0 credits \/ 30 days/)
-  expect(report).toContain("Subscription: 64.40000 / 70.0 credits left")
   expect(report).toMatch(/Top-ups:\s+5\.00000 \/ 10\.0 credits left/)
   expect(report).toContain("Resets:")
   expect(report).toContain("2026")
@@ -90,7 +94,6 @@ test("modal groups issues and omits redundant details", () => {
   expect(report).toContain("Remaining: 12.12345 credits")
   expect(report).toContain("Cost estimation uses Junie 3813.10 rates")
   expect(report).not.toContain("Authentication:")
-  expect(report).not.toContain("Subscription:")
   expect(report).not.toContain("Issues")
   const failed = statusText({ ...status, state: "stale", authError: "login failed", quotaError: "quota failed", pricingError: "pricing failed", error: "balance failed" })
   expect(failed).toContain("\n\nIssues\n  Authentication: login failed\n  Plan details: quota failed\n  Pricing: pricing failed\n  Balance: balance failed")

@@ -90,9 +90,6 @@ export function statusText(status: StatusSnapshot): string {
   ].filter(Boolean)
   const credits = [
     `Remaining: ${balanceText(status)}`,
-    status.subscriptionBalance != null && status.subscriptionMaximum != null &&
-      ((status.topUpMaximum ?? 0) > 0 || status.subscriptionBalance.toFixed(5) !== status.balance?.toFixed(5))
-      ? `Subscription: ${status.subscriptionBalance.toFixed(5)} / ${status.subscriptionMaximum.toFixed(1)} credits left` : "",
     status.topUpBalance != null && status.topUpMaximum != null && status.topUpMaximum > 0
       ? `Top-ups: ${status.topUpBalance.toFixed(5)} / ${status.topUpMaximum.toFixed(1)} credits left` : "",
     rate ? `Refill: ${rate}` : "",
@@ -109,4 +106,17 @@ export function statusText(status: StatusSnapshot): string {
     ...statusFields(status).map(line => `  ${line}`),
     ...(issues.length ? ["", "Issues", ...issues.map(line => `  ${line}`)] : []),
   ].join("\n")
+}
+
+export type StatusSegment = { text: string; bold?: boolean }
+
+export function statusContent(status: StatusSnapshot): StatusSegment[] {
+  const lines = statusText(status).split("\n")
+  return lines.flatMap((line, index): StatusSegment[] => {
+    const newline = index < lines.length - 1 ? "\n" : ""
+    if (status.connected && ["Credits", "Status", "Issues"].includes(line)) {
+      return [{ text: line, bold: true }, { text: newline }]
+    }
+    return [{ text: line + newline }]
+  })
 }

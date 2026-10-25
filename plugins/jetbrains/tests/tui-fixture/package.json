@@ -1,0 +1,9 @@
+{
+  "name": "jetbrains-tui-test-fixture",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./tui": "./tui.ts"
+  }
+}

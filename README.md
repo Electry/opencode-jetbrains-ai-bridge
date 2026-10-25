@@ -53,7 +53,8 @@ next refill, and update time. Plan details depend on account availability.
 | Command | Action |
 | --- | --- |
 | `/jetbrains` | Show account, credits, refill schedule, and cost estimation |
-| `/jetbrains-refresh` | Refresh balance and plan details |
+
+Use **Refresh** in the dialog or press `Ctrl+R` to refresh balance and plan details.
 
 The balance includes usage from other apps on your account. OpenCode's dollar
 costs use Junie rate estimates. Actual billing may differ. Dollar estimates have
