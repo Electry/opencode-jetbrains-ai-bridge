@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "opencode-jetbrains-bridge",
+      "name": "opencode-jetbrains-ai-bridge",
       "devDependencies": {
         "@opencode/plugin": "2.1.4",
         "@opentui/core": "0.6.8",

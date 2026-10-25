@@ -22,7 +22,7 @@ Add the plugin's directory to your OpenCode configuration, typically
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["/path/to/opencode-jetbrains-bridge/plugins/jetbrains"]
+  "plugins": ["/path/to/opencode-jetbrains-ai-bridge/plugins/jetbrains"]
 }
 ```
 
@@ -69,7 +69,7 @@ Example overrides for Luna's pricing and limits, and Astra's output limit:
   "$schema": "https://opencode.ai/config.json",
   "plugins": [
     {
-      "package": "/path/to/opencode-jetbrains-bridge/plugins/jetbrains",
+      "package": "/path/to/opencode-jetbrains-ai-bridge/plugins/jetbrains",
       "options": {
         "models": {
           "gpt-6-luna": {
