@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
   "junie": {
-    "version": "3813.10",
+    "version": "3893.6",
     "platform": "linux-aarch64",
-    "downloadUrl": "https://github.com/JetBrains/junie/releases/download/3813.10/junie-release-3813.10-linux-aarch64.zip",
-    "sha256": "508820f92a32cc2804da88d78ffe7be6b5163f146214da7c0e81eafcf029f921"
+    "downloadUrl": "https://github.com/JetBrains/junie/releases/download/3893.6/junie-release-3893.6-linux-aarch64.zip",
+    "sha256": "95ecc3fc905e4a5ca33f98eda65fb9c3b84f1a10bea50959d3090af02ab894fe"
   },
-  "applicationJarSha256": "7a607b5263cb6467d5cbd1a673704d94a09a083723e3f1ba298bc0d4bfac08b1",
+  "applicationJarSha256": "1ff1d5fba7f9bac2ff6fc08598917b087c9c6ff5df316929e2e42158ac80bae8",
   "extractor": {
     "decompiler": "CFR 0.152",
     "sha256": "f686e8f3ded377d7bc87d216a90e9e9512df4156e75b06c655a16648ae8765b2"
   },
   "pricingUnit": "per-million-tokens",
   "notes": "Token cost estimates from Junie's model definitions. Actual billing and model access depend on your account. Includes older and experimental models.",
-  "totalBundledModels": 95,
+  "totalBundledModels": 83,
   "models": [
     {
       "id": "Qwen/Qwen3.6-27B-FP8",
@@ -406,141 +406,6 @@
       }
     },
     {
-      "id": "gemini-2.0-flash-thinking-exp-01-21",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_0_FLASH_THINKING",
-      "pricing": {
-        "input": 0,
-        "output": 0,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-2.5-flash",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_5_FLASH",
-      "pricing": {
-        "input": 0.3,
-        "output": 2.5,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-2.5-flash-lite",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_5_FLASH_LITE",
-      "pricing": {
-        "input": 0.1,
-        "output": 0.4,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-2.5-flash-lite-preview-06-17",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_5_FLASH_LITE_PREVIEW",
-      "pricing": {
-        "input": 0.1,
-        "output": 0.4,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-2.5-flash-preview-04-17",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_5_FLASH_PREVIEW",
-      "pricing": {
-        "input": 0.15,
-        "output": 0.6,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-2.5-flash-preview-09-2025",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_5_FLASH_LITE_PREVIEW_09_2025",
-      "pricing": {
-        "input": 0.1,
-        "output": 0.4,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-2.5-pro",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_5_PRO",
-      "pricing": {
-        "input": 1.25,
-        "output": 10,
-        "cacheRead": 0.31,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-2.5-pro-exp-03-25",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_5_PRO_EXP",
-      "pricing": {
-        "input": 0,
-        "output": 0,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-2.5-pro-preview-05-06",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_2_5_PRO_PREVIEW",
-      "pricing": {
-        "input": 1.25,
-        "output": 10,
-        "cacheRead": 0.31,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
       "id": "gemini-3-flash-preview",
       "provider": "Google",
       "sourceSymbol": "GEMINI_3_0_FLASH_PREVIEW",
@@ -683,21 +548,6 @@
         "input": 2,
         "output": 10,
         "cacheRead": 0.1,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1048576
-      }
-    },
-    {
-      "id": "gemini-exp-1206",
-      "provider": "Google",
-      "sourceSymbol": "GEMINI_1206",
-      "pricing": {
-        "input": 0.04,
-        "output": 0.15,
-        "cacheRead": 0,
         "cacheWrite": 0
       },
       "limits": {
@@ -886,36 +736,6 @@
       }
     },
     {
-      "id": "gpt-3.5-turbo",
-      "provider": "OpenAI",
-      "sourceSymbol": "GPT_3_5_TURBO",
-      "pricing": {
-        "input": 0.5,
-        "output": 1.5,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 16385
-      }
-    },
-    {
-      "id": "gpt-4-turbo-2024-04-09",
-      "provider": "OpenAI",
-      "sourceSymbol": "GPT_4_TURBO_2024_04_09",
-      "pricing": {
-        "input": 10,
-        "output": 30,
-        "cacheRead": 0,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 128000
-      }
-    },
-    {
       "id": "gpt-4.1-2025-04-14",
       "provider": "OpenAI",
       "sourceSymbol": "GPT_4_1_2025_04_14",
@@ -938,21 +758,6 @@
         "input": 0.4,
         "output": 1.6,
         "cacheRead": 0.1,
-        "cacheWrite": 0
-      },
-      "limits": {
-        "output": null,
-        "context": 1047576
-      }
-    },
-    {
-      "id": "gpt-4.1-nano-2025-04-14",
-      "provider": "OpenAI",
-      "sourceSymbol": "GPT_4_1_NANO_2025_04_14",
-      "pricing": {
-        "input": 0.1,
-        "output": 0.4,
-        "cacheRead": 0.025,
         "cacheWrite": 0
       },
       "limits": {
@@ -1363,6 +1168,21 @@
       "limits": {
         "output": null,
         "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-6.1-terra",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_6_1_TERRA",
+      "pricing": {
+        "input": 1,
+        "output": 5,
+        "cacheRead": 0.05,
+        "cacheWrite": 1.25
+      },
+      "limits": {
+        "output": 128000,
+        "context": 1050000
       }
     },
     {
