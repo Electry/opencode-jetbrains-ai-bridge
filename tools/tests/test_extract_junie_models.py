@@ -21,6 +21,7 @@ ANSWER_SOURCE = '''double oneMillion = 1000000.0;
 return tokens / oneMillion * caps.getInputPrice() + caps.getOutputPrice()
 + caps.getCacheInputPrice() + caps.getCacheCreateInputPrice();'''
 CAPS = 'new ModelCapabilities(0.1, 0.5, 0.01, 0.125, null, (Integer)1000000, null, false, false, null, null, true, false, 0.01, false, 0.0, 1810, 55184, null)'
+CAPS_3893 = CAPS.replace('1810, 55184, null)', '1810, null, 186256, null)')
 
 
 def release(version, target='linux-aarch64'):
@@ -50,6 +51,27 @@ class ExtractorTests(unittest.TestCase):
         result = extractor.capabilities(CAPS.replace('55184, null)', '0x21, null)'))
         self.assertEqual(result['pricing']['input'], 0)
         self.assertIsNone(result['limits']['context'])
+
+    def test_3893_capabilities_with_input_modalities(self):
+        for expression in [CAPS_3893, CAPS_3893.replace('1810, null,', '1810, CollectionsKt.listOf("text", "image"),')]:
+            with self.subTest(expression=expression):
+                self.assertEqual(extractor.capabilities(expression), extractor.capabilities(CAPS))
+        result = extractor.capabilities(CAPS_3893.replace('186256, null)', '0x21, null)'))
+        self.assertEqual(result['pricing']['input'], 0)
+        self.assertIsNone(result['limits']['context'])
+
+    def test_capabilities_without_default_constructor_mask(self):
+        for expression in [CAPS.replace(', 55184, null)', ')'),
+                           CAPS_3893.replace(', 186256, null)', ')')]:
+            with self.subTest(expression=expression):
+                self.assertEqual(extractor.capabilities(expression), extractor.capabilities(CAPS))
+
+    def test_unsupported_constructor_and_invalid_default_masks_are_rejected(self):
+        for expression in [CAPS_3893.replace('1810, null,', '1810, null, false,'),
+                           CAPS_3893.replace('186256, null)', '0.5, null)'),
+                           CAPS_3893.replace('186256, null)', '186256, marker)')]:
+            with self.subTest(expression=expression), self.assertRaises(extractor.ExtractionError):
+                extractor.capabilities(expression)
 
     def test_numeric_literals_and_unsupported_expressions(self):
         self.assertEqual(extractor.number('(Integer)0x100000'), 1048576)

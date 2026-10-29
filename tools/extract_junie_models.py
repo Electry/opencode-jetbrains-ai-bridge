@@ -231,10 +231,12 @@ def capabilities(expression):
         raise ExtractionError('Unsupported model capabilities expression.')
     raw, _ = parenthesized(expression, match.end() - 1)
     args = split_arguments(raw)
-    if len(args) not in [17, 19]:
+    # 3893.6 has inputModalities after cacheTimeoutSeconds. The first six
+    # pricing/limit fields and their Kotlin default-mask bits are unchanged.
+    if len(args) not in [17, 18, 19, 20]:
         raise ExtractionError('ModelCapabilities constructor changed, update the extractor.')
     values = [number(arg) for arg in args[:6]]
-    if len(args) == 19:
+    if len(args) in [19, 20]:
         mask = number(args[-2])
         if not isinstance(mask, int) or args[-1] != 'null':
             raise ExtractionError('Unsupported Kotlin default constructor mask.')
