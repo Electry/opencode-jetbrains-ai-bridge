@@ -6,6 +6,7 @@ export const GPT_MODELS = [
   { id: "gpt-6-astra", name: "GPT-6 Astra", supportsNone: false },
   { id: "gpt-6-luna", name: "GPT-6 Luna", supportsNone: true },
   { id: "gpt-6-sol", name: "GPT-6 Sol", supportsNone: true },
+  { id: "gpt-6.1-terra", name: "GPT-6.1 Terra", supportsNone: true },
   { id: "gpt-6.1-sol", name: "GPT-6.1 Sol", supportsNone: false },
 ] as const
 

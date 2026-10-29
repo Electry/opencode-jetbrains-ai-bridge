@@ -10,6 +10,7 @@ Supported model IDs (under the `jetbrains` provider):
 - `gpt-6-luna`
 - `gpt-6-sol`
 - `gpt-6-astra`
+- `gpt-6.1-terra`
 - `gpt-6.1-sol`
 - `claude-sonnet-5`
 - `claude-opus-5`

@@ -43,7 +43,7 @@ test("model overrides reach registration and stay scoped to their model", async 
   expect(Number(luna.cost[0].input)).toBe(1)
   expect(models.find(model => model.id === "gpt-6-sol")!.limit.output).toBe(128000)
   expect(pricing.get("gpt-6-sol")?.source).toBe("junie")
-  expect(models).toHaveLength(13)
+  expect(models).toHaveLength(14)
   expect(models.some(model => model.id === "unknown")).toBe(false)
 })
 

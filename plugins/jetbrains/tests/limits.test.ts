@@ -49,7 +49,7 @@ test("per-model limits apply to registration without enabling unknown models", (
   const options = parseOptions({ models: { [id]: { limits: { context: 900000, output: 96000 } }, unknown: { limits: { output: 1000 } } } })
   const models = providerDefinition(options, new Map(), contexts).models
   expect(models.find(model => model.id === id)!.limit).toEqual({ context: 900000, output: 96000 })
-  expect(models).toHaveLength(13)
+  expect(models).toHaveLength(14)
   expect(models.some(model => model.id === "unknown")).toBe(false)
 })
 

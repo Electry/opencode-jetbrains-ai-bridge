@@ -5,9 +5,9 @@ import { bundledContextLimits } from "../src/limits.ts"
 import { GATEWAY } from "../src/constants.ts"
 import { prepareRequest } from "../src/gateway.ts"
 
-const expectedIDs = ["gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra", "gpt-6-astra", "gpt-6-luna", "gpt-6-sol", "gpt-6.1-sol"]
+const expectedIDs = ["gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra", "gpt-6-astra", "gpt-6-luna", "gpt-6-sol", "gpt-6.1-terra", "gpt-6.1-sol"]
 
-test("registers the seven supported GPT models with bundled prices", async () => {
+test("registers the supported GPT models with bundled prices", async () => {
   const options = parseOptions({})
   const pricing = await loadPricingByModel(options, GPT_MODELS.map(model => model.id), "OpenAI")
   const definition = providerDefinition(options, pricing, bundledContextLimits(await loadBundledSnapshot()))
@@ -16,7 +16,7 @@ test("registers the seven supported GPT models with bundled prices", async () =>
     expect(model.name).toBe(GPT_MODELS.find(entry => entry.id === model.id)!.name)
     expect(model.capabilities).toEqual({ tools: true, input: ["text"], output: ["text"], temperature: false })
     expect(model.settings).toEqual({ reasoningEffort: "low", textVerbosity: "low" })
-    expect(model.limit).toEqual({ context: 1000000, output: 128000 })
+    expect(model.limit).toEqual({ context: model.id === "gpt-6.1-terra" ? 1050000 : 1000000, output: 128000 })
     expect(pricing.get(model.id)?.source).toBe("junie")
     expect(model.cost).toHaveLength(1)
     expect(Number(model.cost[0].input)).toBe(pricing.get(model.id)!.prices!.input)

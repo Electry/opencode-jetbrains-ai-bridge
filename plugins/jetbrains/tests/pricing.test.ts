@@ -19,7 +19,7 @@ test("loads per-million Junie prices and leaves model limits unchanged", () => {
     source: "junie", version: "3813.10", error: null,
   })
   const definition = providerDefinition(parseOptions({}), new Map([[entry.id, pricing]]))
-  expect(definition.models).toHaveLength(13)
+  expect(definition.models).toHaveLength(14)
   expect(definition.models[0].limit).toEqual({ context: 200000, output: 128000 })
 })
 

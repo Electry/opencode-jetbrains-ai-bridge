@@ -32,7 +32,7 @@ test("Sonnet uses Anthropic settings with the shared JetBrains login", async () 
   for (const variant of model.variants) expect(variant.settings).toEqual({ effort: variant.id })
   expect(pricing.source).toBe("junie")
   expect(Number(model.cost[0].cache.read)).toBe(pricing.prices!.cache.read)
-  expect(MODEL_CATALOG).toHaveLength(13)
+  expect(MODEL_CATALOG).toHaveLength(14)
 })
 
 test("Sonnet obeys unified model overrides for limits and prices", async () => {
