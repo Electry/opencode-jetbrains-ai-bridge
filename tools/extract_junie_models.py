@@ -225,18 +225,22 @@ def number(text):
     return int(value) if value == int(value) else value
 
 
-def capabilities(expression):
+def capabilities(expression, constructor_size=None):
     match = re.search(r'new ModelCapabilities\s*\(', expression)
     if not match:
         raise ExtractionError('Unsupported model capabilities expression.')
     raw, _ = parenthesized(expression, match.end() - 1)
     args = split_arguments(raw)
-    # 3893.6 has inputModalities after cacheTimeoutSeconds. The first six
-    # pricing/limit fields and their Kotlin default-mask bits are unchanged.
-    if len(args) not in [17, 18, 19, 20]:
+    # 3893.6 added inputModalities; 3959.5 added maxRequestBytes. The first
+    # six pricing/limit fields and their Kotlin default-mask bits are unchanged.
+    # A 19-argument call is ambiguous: use the verified source signature when
+    # available, otherwise retain the original 17-field masked-call behavior.
+    if constructor_size is None:
+        constructor_size = {17: 17, 18: 18, 19: 17, 20: 18, 21: 19}.get(len(args))
+    if constructor_size not in [17, 18, 19] or len(args) not in [constructor_size, constructor_size + 2]:
         raise ExtractionError('ModelCapabilities constructor changed, update the extractor.')
     values = [number(arg) for arg in args[:6]]
-    if len(args) in [19, 20]:
+    if len(args) == constructor_size + 2:
         mask = number(args[-2])
         if not isinstance(mask, int) or args[-1] != 'null':
             raise ExtractionError('Unsupported Kotlin default constructor mask.')
@@ -259,6 +263,7 @@ def parse_models(llm_source, caps_source, answer_source):
     expected = ['inputPrice', 'outputPrice', 'cacheInputPrice', 'cacheCreateInputPrice', 'maxOutputTokens', 'maxContextTokens']
     if not constructor or [arg.split()[-1] for arg in constructor.group(1).split(',')[:6]] != expected:
         raise ExtractionError('ModelCapabilities field order changed. Update the extractor.')
+    constructor_size = len(split_arguments(constructor.group(1)))
     if not re.search(r'oneMillion\s*=\s*1000000(?:\.0)?\s*;', answer_source) or not all(
         f'caps.get{field[0].upper() + field[1:]}()' in answer_source for field in expected[:4]
     ):
@@ -274,7 +279,7 @@ def parse_models(llm_source, caps_source, answer_source):
             continue
         symbol, expression = assignment.groups()
         if expression.startswith('new ModelCapabilities('):
-            variables[symbol] = capabilities(expression)
+            variables[symbol] = capabilities(expression, constructor_size)
             continue
         provider = re.fullmatch(r'LlmProvider\.([A-Za-z0-9_]+)', expression)
         if provider:
@@ -300,7 +305,7 @@ def parse_models(llm_source, caps_source, answer_source):
         provider_expr = re.sub(r'\((?:LlmProvider|Object)\)', '', args[1]).strip('() ')
         direct = re.fullmatch(r'LlmProvider\.([A-Za-z0-9_]+)', provider_expr)
         provider_name = direct.group(1) if direct else variables.get(provider_expr)
-        caps = capabilities(args[3]) if args[3].startswith('new ModelCapabilities(') else variables.get(args[3])
+        caps = capabilities(args[3], constructor_size) if args[3].startswith('new ModelCapabilities(') else variables.get(args[3])
         if not isinstance(model_id, str) or not isinstance(provider_name, str) or not isinstance(caps, dict):
             raise ExtractionError(f'Could not resolve model definition {symbol}.')
         if symbol in models:

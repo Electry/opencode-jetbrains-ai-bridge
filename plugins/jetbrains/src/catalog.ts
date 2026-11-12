@@ -12,6 +12,7 @@ export const GPT_MODELS = [
 
 export const CLAUDE_MODELS = [
   { id: "claude-fable-5-1", name: "Claude Fable 5.1", supportsMax: true, summarizedThinking: true, disableParallelTools: false },
+  { id: "claude-fable-5-2", name: "Claude Fable 5.2", supportsMax: true, summarizedThinking: true, disableParallelTools: false },
   { id: "claude-haiku-5-5", name: "Claude Haiku 5.5", supportsMax: false, summarizedThinking: false, disableParallelTools: true },
   { id: "claude-opus-5", name: "Claude Opus 5", supportsMax: true, summarizedThinking: true, disableParallelTools: false },
   { id: "claude-opus-5-5", name: "Claude Opus 5.5", supportsMax: true, summarizedThinking: true, disableParallelTools: false },

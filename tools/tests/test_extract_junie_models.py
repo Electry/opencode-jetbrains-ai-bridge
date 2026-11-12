@@ -16,12 +16,15 @@ spec.loader.exec_module(extractor)
 
 CAPS_SOURCE = '''public ModelCapabilities(double inputPrice, double outputPrice,
 double cacheInputPrice, double cacheCreateInputPrice, @Nullable Integer maxOutputTokens,
-@Nullable Integer maxContextTokens, Object other) {}'''
+@Nullable Integer maxContextTokens, Object vision, boolean resume, boolean reasoning,
+Object efforts, Object effort, boolean search, boolean computer, double searchPrice,
+boolean toolChoice, double audioPrice, int cacheTimeoutSeconds) {}'''
 ANSWER_SOURCE = '''double oneMillion = 1000000.0;
 return tokens / oneMillion * caps.getInputPrice() + caps.getOutputPrice()
 + caps.getCacheInputPrice() + caps.getCacheCreateInputPrice();'''
 CAPS = 'new ModelCapabilities(0.1, 0.5, 0.01, 0.125, null, (Integer)1000000, null, false, false, null, null, true, false, 0.01, false, 0.0, 1810, 55184, null)'
 CAPS_3893 = CAPS.replace('1810, 55184, null)', '1810, null, 186256, null)')
+CAPS_3959 = CAPS_3893.replace('1810, null, 186256, null)', '1810, null, null, 448400, null)')
 
 
 def release(version, target='linux-aarch64'):
@@ -66,8 +69,19 @@ class ExtractorTests(unittest.TestCase):
             with self.subTest(expression=expression):
                 self.assertEqual(extractor.capabilities(expression), extractor.capabilities(CAPS))
 
+    def test_3959_capabilities_with_max_request_bytes(self):
+        for limit in ['null', '(Long)20971520L']:
+            expression = CAPS_3959.replace('null, 448400, null)', f'{limit}, 448400, null)')
+            with self.subTest(limit=limit):
+                self.assertEqual(extractor.capabilities(expression, 19), extractor.capabilities(CAPS))
+                self.assertEqual(extractor.capabilities(expression.replace(', 448400, null)', ')'), 19),
+                                 extractor.capabilities(CAPS))
+        result = extractor.capabilities(CAPS_3959.replace('448400, null)', '0x21, null)'), 19)
+        self.assertEqual(result['pricing']['input'], 0)
+        self.assertIsNone(result['limits']['context'])
+
     def test_unsupported_constructor_and_invalid_default_masks_are_rejected(self):
-        for expression in [CAPS_3893.replace('1810, null,', '1810, null, false,'),
+        for expression in [CAPS_3959.replace('1810, null, null,', '1810, null, null, false,'),
                            CAPS_3893.replace('186256, null)', '0.5, null)'),
                            CAPS_3893.replace('186256, null)', '186256, marker)')]:
             with self.subTest(expression=expression), self.assertRaises(extractor.ExtractionError):
@@ -87,10 +101,15 @@ class ExtractorTests(unittest.TestCase):
             ModelCapabilities caps = CAPS;
             A = LLM.Companion.llm("gpt-example", (LlmProvider)((Object)object), "alias", caps, null);
             B = some.LLM$Companion.llm$default(Companion, "other-example", LlmProvider.Google, "alias", CAPS, null, 16, null);
-        }'''.replace('CAPS', CAPS)
-        models = extractor.parse_models(source, CAPS_SOURCE, ANSWER_SOURCE)
-        self.assertEqual(len(models), 2)
-        self.assertEqual({m['provider'] for m in models}, {'OpenAI', 'Google'})
+        }'''
+        latest_signature = CAPS_SOURCE.replace('int cacheTimeoutSeconds)',
+                                               'int cacheTimeoutSeconds, Object inputModalities, Long maxRequestBytes)')
+        for expression, signature in [(CAPS, CAPS_SOURCE), (CAPS_3959, latest_signature),
+                                      (CAPS_3959.replace(', 448400, null)', ')'), latest_signature)]:
+            with self.subTest(expression=expression):
+                models = extractor.parse_models(source.replace('CAPS', expression), signature, ANSWER_SOURCE)
+                self.assertEqual(len(models), 2)
+                self.assertEqual({m['provider'] for m in models}, {'OpenAI', 'Google'})
 
     def test_catalog_changes_fail_instead_of_silently_dropping_models(self):
         source = '''private static final LLM A; private static final LLM B;

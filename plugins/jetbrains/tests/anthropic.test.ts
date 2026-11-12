@@ -32,7 +32,7 @@ test("Sonnet uses Anthropic settings with the shared JetBrains login", async () 
   for (const variant of model.variants) expect(variant.settings).toEqual({ effort: variant.id })
   expect(pricing.source).toBe("junie")
   expect(Number(model.cost[0].cache.read)).toBe(pricing.prices!.cache.read)
-  expect(MODEL_CATALOG).toHaveLength(14)
+  expect(MODEL_CATALOG).toHaveLength(15)
 })
 
 test("Sonnet obeys unified model overrides for limits and prices", async () => {
@@ -51,7 +51,7 @@ test("Claude models use bundled limits and prices with the Junie effort choices"
   const pricing = new Map(CLAUDE_MODELS.map(model => [model.id, resolvePricing(options, model.id, "Anthropic", snapshot)]))
   const definitions = providerDefinition(options, pricing, bundledContextLimits(snapshot, "Anthropic"), bundledOutputLimits(snapshot, "Anthropic"))
   const models = definitions.models.filter(model => model.id.startsWith("claude-"))
-  expect(models.map(model => String(model.id))).toEqual(["claude-fable-5-1", "claude-haiku-5-5", "claude-opus-5", "claude-opus-5-5", "claude-sonnet-5", "claude-sonnet-5-5"])
+  expect(models.map(model => String(model.id))).toEqual(["claude-fable-5-1", "claude-fable-5-2", "claude-haiku-5-5", "claude-opus-5", "claude-opus-5-5", "claude-sonnet-5", "claude-sonnet-5-5"])
   for (const definition of models) {
     const haiku = definition.id === "claude-haiku-5-5"
     expect(definition.limit).toEqual({ context: 1000000, output: haiku ? 64000 : 128000 })
