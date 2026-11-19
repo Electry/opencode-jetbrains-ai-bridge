@@ -8,6 +8,8 @@ export const GPT_MODELS = [
   { id: "gpt-6-sol", name: "GPT-6 Sol", supportsNone: true },
   { id: "gpt-6.1-terra", name: "GPT-6.1 Terra", supportsNone: true },
   { id: "gpt-6.1-sol", name: "GPT-6.1 Sol", supportsNone: false },
+  { id: "gpt-6.2-sol", name: "GPT-6.2 Sol", supportsNone: false },
+  { id: "gpt-6.2-astra", name: "GPT-6.2 Astra", supportsNone: false },
 ] as const
 
 export const CLAUDE_MODELS = [

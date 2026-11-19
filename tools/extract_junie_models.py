@@ -23,10 +23,13 @@ import zipfile
 
 
 MANIFEST = 'https://raw.githubusercontent.com/jetbrains-junie/junie/main/update-info.jsonl'
+NIGHTLY_MANIFEST = 'https://raw.githubusercontent.com/jetbrains-junie/junie/main/update-info-nightly.jsonl'
 CFR_URL = 'https://repo.maven.apache.org/maven2/org/benf/cfr/0.152/cfr-0.152.jar'
 CFR_SHA256 = 'f686e8f3ded377d7bc87d216a90e9e9512df4156e75b06c655a16648ae8765b2'
 PACKAGE = 'com/intellij/ml/llm/matterhorn/llm/'
 CLASSES = ('LLM', 'ModelCapabilities', 'AIAnswer')
+PRICE_KEYS = ('input', 'output', 'cacheRead', 'cacheWrite')
+LIMIT_KEYS = ('output', 'context')
 
 
 class ExtractionError(Exception):
@@ -225,45 +228,80 @@ def number(text):
     return int(value) if value == int(value) else value
 
 
-def capabilities(expression, constructor_size=None):
+def kotlin_mask(args, error):
+    mask = number(args[-2])
+    if not isinstance(mask, int) or args[-1] != 'null':
+        raise ExtractionError(error)
+    return mask
+
+
+def masked_values(args, mask, fallback):
+    return [value if mask & (1 << index) else number(args[index])
+            for index, value in enumerate(fallback)]
+
+
+def capabilities(expression, constructor_size):
     match = re.search(r'new ModelCapabilities\s*\(', expression)
     if not match:
         raise ExtractionError('Unsupported model capabilities expression.')
     raw, _ = parenthesized(expression, match.end() - 1)
     args = split_arguments(raw)
-    # 3893.6 added inputModalities; 3959.5 added maxRequestBytes. The first
-    # six pricing/limit fields and their Kotlin default-mask bits are unchanged.
-    # A 19-argument call is ambiguous: use the verified source signature when
-    # available, otherwise retain the original 17-field masked-call behavior.
-    if constructor_size is None:
-        constructor_size = {17: 17, 18: 18, 19: 17, 20: 18, 21: 19}.get(len(args))
-    if constructor_size not in [17, 18, 19] or len(args) not in [constructor_size, constructor_size + 2]:
+    # A direct call and a shorter masked call can have the same arity.
+    if len(args) not in [constructor_size, constructor_size + 2]:
         raise ExtractionError('ModelCapabilities constructor changed, update the extractor.')
-    values = [number(arg) for arg in args[:6]]
-    if len(args) == constructor_size + 2:
-        mask = number(args[-2])
-        if not isinstance(mask, int) or args[-1] != 'null':
-            raise ExtractionError('Unsupported Kotlin default constructor mask.')
-        for index in range(6):
-            if mask & (1 << index):
-                values[index] = 0 if index < 4 else None
+    mask = 0 if len(args) == constructor_size else kotlin_mask(args, 'Unsupported Kotlin default constructor mask.')
+    values = masked_values(args, mask, (0, 0, 0, 0, None, None))
+    return pricing_and_limits(values)
+
+
+def pricing_and_limits(values):
     if any(value is None for value in values[:4]):
         raise ExtractionError('Model prices cannot be null.')
     if any(value is not None and not isinstance(value, int) for value in values[4:]):
         raise ExtractionError('Model limits must be integers or null.')
     return {
-        'pricing': dict(zip(['input', 'output', 'cacheRead', 'cacheWrite'], values[:4])),
-        'limits': dict(zip(['output', 'context'], values[4:])),
+        'pricing': dict(zip(PRICE_KEYS, values[:4])),
+        'limits': dict(zip(LIMIT_KEYS, values[4:])),
     }
+
+
+def model_definition(model_id, provider, symbol, caps):
+    return {'id': model_id, 'provider': provider, 'sourceSymbol': symbol,
+            'pricing': caps['pricing'], 'limits': caps['limits']}
+
+
+def served_model(expression, source, models, constructor_size, symbol):
+    """Resolve a servedAs alias with a static Kotlin capabilities copy."""
+    alias = re.fullmatch(r'LLM\.Companion\.servedAs\(LLM\.(\w+), ("(?:[^"\\]|\\.)*"), LLM::([\w$]+)\)', expression)
+    if not alias or alias[1] not in models:
+        raise ExtractionError('Unsupported servedAs model alias.')
+    base = models[alias[1]]
+    method = re.search(rf'\bstatic\s+final\s+ModelCapabilities\s+{re.escape(alias[3])}'
+                       r'\(ModelCapabilities\s+([\w$]+)\)\s*\{', source)
+    if not method:
+        raise ExtractionError('Missing servedAs capabilities method.')
+    body, _ = parenthesized(source, method.end() - 1)
+    copy = re.fullmatch(r'\s*(?:Intrinsics\.checkNotNullParameter\([^;]*\);\s*)?'
+                        r'return ModelCapabilities\.copy\$default\((.*)\);\s*', body, re.S)
+    args = split_arguments(copy[1]) if copy else []
+    if len(args) != constructor_size + 3 or args[0] != method[1]:
+        raise ExtractionError('Unsupported servedAs capabilities copy.')
+    mask = kotlin_mask(args, 'Unsupported Kotlin capabilities copy mask.')
+    inherited = [base['pricing'][key] for key in PRICE_KEYS] + [base['limits'][key] for key in LIMIT_KEYS]
+    values = masked_values(args[1:], mask, inherited)
+    return model_definition(json.loads(alias[2]), base['provider'], symbol, pricing_and_limits(values))
 
 
 def parse_models(llm_source, caps_source, answer_source):
     # Validate argument meaning and the per-million formula.
     constructor = re.search(r'public ModelCapabilities\(([^)]*)\)', caps_source)
     expected = ['inputPrice', 'outputPrice', 'cacheInputPrice', 'cacheCreateInputPrice', 'maxOutputTokens', 'maxContextTokens']
-    if not constructor or [arg.split()[-1] for arg in constructor.group(1).split(',')[:6]] != expected:
+    fields = split_arguments(constructor.group(1)) if constructor else []
+    if [arg.split()[-1] for arg in fields[:6]] != expected:
         raise ExtractionError('ModelCapabilities field order changed. Update the extractor.')
-    constructor_size = len(split_arguments(constructor.group(1)))
+    constructor_size = len(fields)
+    if constructor_size not in (17, 18, 19, 21):
+        raise ExtractionError('ModelCapabilities constructor changed, update the extractor.')
     if not re.search(r'oneMillion\s*=\s*1000000(?:\.0)?\s*;', answer_source) or not all(
         f'caps.get{field[0].upper() + field[1:]}()' in answer_source for field in expected[:4]
     ):
@@ -284,6 +322,11 @@ def parse_models(llm_source, caps_source, answer_source):
         provider = re.fullmatch(r'LlmProvider\.([A-Za-z0-9_]+)', expression)
         if provider:
             variables[symbol] = provider.group(1)
+            continue
+        if expression.startswith('LLM.Companion.servedAs('):
+            if symbol in models:
+                raise ExtractionError('Duplicate model symbol.')
+            models[symbol] = served_model(expression, llm_source, models, constructor_size, symbol)
             continue
         call = re.search(r'\.llm(\$default)?\s*\(', expression)
         if not call:
@@ -310,7 +353,7 @@ def parse_models(llm_source, caps_source, answer_source):
             raise ExtractionError(f'Could not resolve model definition {symbol}.')
         if symbol in models:
             raise ExtractionError('Duplicate model symbol.')
-        models[symbol] = {'id': model_id, 'provider': provider_name, 'sourceSymbol': symbol, **caps}
+        models[symbol] = model_definition(model_id, provider_name, symbol, caps)
     declared = set(re.findall(r'(?:private|public)\s+static\s+final\s+LLM\s+(\w+)\s*;', llm_source))
     if not declared or set(models) != declared:
         raise ExtractionError(f'Incomplete catalog extraction: {len(models)} definitions, {len(declared)} declarations.')
@@ -322,19 +365,23 @@ def main():
     parser.add_argument('--output', type=Path, help='Write JSON atomically to this file, default: stdout')
     parser.add_argument('--cache-dir', type=Path, default=Path('/tmp/opencode/junie-model-pricing'))
     parser.add_argument('--platform', choices=['linux-amd64', 'linux-aarch64', 'macos-amd64', 'macos-aarch64'])
-    parser.add_argument('--version', help='Pin a published release instead of selecting latest')
+    parser.add_argument('--nightly', action='store_true', help='Use the official nightly channel instead of stable')
+    parser.add_argument('--version', help='Pin a published version on the selected channel')
     parser.add_argument('--java', help='Use this installed Java executable instead of PATH/bundled Java')
     parser.add_argument('--provider', help='Filter extracted definitions, e.g. OpenAI')
     args = parser.parse_args()
     target = args.platform or host_platform()
     if args.version and not re.fullmatch(r'\d+(?:\.\d+)*', args.version):
         raise ExtractionError('Version must be a numeric Junie release version.')
-    request = urllib.request.Request(MANIFEST, headers={'User-Agent': 'junie-model-pricing-extractor/1'})
+    manifest = NIGHTLY_MANIFEST if args.nightly else MANIFEST
+    request = urllib.request.Request(manifest, headers={'User-Agent': 'junie-model-pricing-extractor/1'})
     with urllib.request.urlopen(request, timeout=30) as response:
         release = select_release(response.read().decode('utf-8'), target, args.version)
-    print(f'Junie {release["version"]} ({target}), downloading/verifying release...', file=sys.stderr)
+    channel = 'nightly' if args.nightly else 'stable'
+    print(f'Junie {release["version"]} ({target}, {channel}), downloading/verifying release...', file=sys.stderr)
     cache = args.cache_dir.resolve()
-    bundle = cache / target / release['version'] / 'bundle.zip'
+    bundle_cache = cache / 'nightly' if args.nightly else cache
+    bundle = bundle_cache / target / release['version'] / 'bundle.zip'
     download(release['downloadUrl'], bundle, release['sha256'], release.get('size'))
     cfr = cache / 'cfr-0.152.jar'
     download(CFR_URL, cfr, CFR_SHA256)

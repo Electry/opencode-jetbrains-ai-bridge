@@ -5,7 +5,11 @@ import { bundledContextLimits } from "../src/limits.ts"
 import { GATEWAY } from "../src/constants.ts"
 import { prepareRequest } from "../src/gateway.ts"
 
-const expectedIDs = ["gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra", "gpt-6-astra", "gpt-6-luna", "gpt-6-sol", "gpt-6.1-terra", "gpt-6.1-sol"]
+const expectedIDs = [
+  "gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra", "gpt-6-astra", "gpt-6-luna", "gpt-6-sol",
+  "gpt-6.1-terra", "gpt-6.1-sol", "gpt-6.2-sol", "gpt-6.2-astra",
+]
+const withoutNone = new Set(["gpt-6-astra", "gpt-6.1-sol", "gpt-6.2-astra", "gpt-6.2-sol"])
 
 test("registers the supported GPT models with bundled prices", async () => {
   const options = parseOptions({})
@@ -23,10 +27,10 @@ test("registers the supported GPT models with bundled prices", async () => {
   }
 })
 
-test("Astra and 6.1 Sol have five effort choices, other GPT models have six", () => {
+test("only supported GPT models offer the none reasoning effort", () => {
   for (const model of providerDefinition(parseOptions({})).models.filter(model => model.id.startsWith("gpt-"))) {
     const efforts = ["low", "medium", "high", "xhigh", "max"]
-    if (model.id !== "gpt-6-astra" && model.id !== "gpt-6.1-sol") efforts.unshift("none")
+    if (!withoutNone.has(model.id)) efforts.unshift("none")
     expect(model.variants.map(variant => String(variant.id))).toEqual(efforts)
     for (const variant of model.variants) expect(variant.settings?.reasoningEffort).toBe(variant.id)
   }

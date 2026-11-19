@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "junie": {
-    "version": "4020.7",
+    "version": "4100.8",
     "platform": "linux-aarch64",
-    "downloadUrl": "https://github.com/JetBrains/junie/releases/download/4020.7/junie-release-4020.7-linux-aarch64.zip",
-    "sha256": "25784adc33ef1e027831cbecdc9e3d54feb0ea27709c0ce8e619cc79079abe84"
+    "downloadUrl": "https://github.com/JetBrains/junie/releases/download/4100.8/junie-release-4100.8-linux-aarch64.zip",
+    "sha256": "5d7df32781097babd2060f2d480d4606e80c25171256d3f43d5bf75da0f585c3"
   },
-  "applicationJarSha256": "78ee86d643fe955409c5e2624f2bcf79a63c4c92575ee01ac704603054927efe",
+  "applicationJarSha256": "9b02bac368ff5ea17aecc35bd5dc8d193978b2edd9366f6d493727a88f6538d0",
   "extractor": {
     "decompiler": "CFR 0.152",
     "sha256": "f686e8f3ded377d7bc87d216a90e9e9512df4156e75b06c655a16648ae8765b2"
   },
   "pricingUnit": "per-million-tokens",
   "notes": "Token cost estimates from Junie's model definitions. Actual billing and model access depend on your account. Includes older and experimental models.",
-  "totalBundledModels": 85,
+  "totalBundledModels": 88,
   "models": [
     {
       "id": "Qwen/Qwen3.6-27B-FP8",
       "provider": "AiPlatformVllm",
       "sourceSymbol": "QWEN3_6_27B_AI_PLATFORM",
       "pricing": {
-        "input": 0.15,
-        "output": 0.9,
-        "cacheRead": 0.015,
-        "cacheWrite": 0.15
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
       },
       "limits": {
         "output": null,
@@ -530,9 +530,9 @@
       "provider": "Google",
       "sourceSymbol": "GEMINI_3_7_FLASH",
       "pricing": {
-        "input": 0.4,
-        "output": 2.4,
-        "cacheRead": 0.04,
+        "input": 0.75,
+        "output": 3.75,
+        "cacheRead": 0.075,
         "cacheWrite": 0
       },
       "limits": {
@@ -578,6 +578,21 @@
         "input": 2,
         "output": 10,
         "cacheRead": 0.1,
+        "cacheWrite": 0
+      },
+      "limits": {
+        "output": null,
+        "context": 1048576
+      }
+    },
+    {
+      "id": "gemini-4-hydrogen",
+      "provider": "Google",
+      "sourceSymbol": "GEMINI_4_HYDROGEN",
+      "pricing": {
+        "input": 1.5,
+        "output": 7.5,
+        "cacheRead": 0.075,
         "cacheWrite": 0
       },
       "limits": {
@@ -1213,6 +1228,36 @@
       "limits": {
         "output": 128000,
         "context": 1050000
+      }
+    },
+    {
+      "id": "gpt-6.2-astra",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_6_2_ASTRA",
+      "pricing": {
+        "input": 8,
+        "output": 40,
+        "cacheRead": 0.4,
+        "cacheWrite": 10
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
+      }
+    },
+    {
+      "id": "gpt-6.2-sol",
+      "provider": "OpenAI",
+      "sourceSymbol": "GPT_6_2_SOL",
+      "pricing": {
+        "input": 2,
+        "output": 10,
+        "cacheRead": 0.1,
+        "cacheWrite": 2.5
+      },
+      "limits": {
+        "output": null,
+        "context": 1000000
       }
     },
     {

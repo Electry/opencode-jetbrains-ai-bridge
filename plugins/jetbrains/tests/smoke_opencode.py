@@ -15,7 +15,13 @@ import urllib.parse
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MODEL_IDS = {'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra', 'gpt-6-luna', 'gpt-6-sol', 'gpt-6.1-terra', 'gpt-6.1-sol', 'claude-fable-5-1', 'claude-fable-5-2', 'claude-haiku-5-5', 'claude-opus-5', 'claude-opus-5-5', 'claude-sonnet-5', 'claude-sonnet-5-5'}
+MODEL_IDS = {
+    'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra', 'gpt-6-luna', 'gpt-6-sol',
+    'gpt-6.1-terra', 'gpt-6.1-sol', 'gpt-6.2-astra', 'gpt-6.2-sol',
+    'claude-fable-5-1', 'claude-fable-5-2', 'claude-haiku-5-5', 'claude-opus-5',
+    'claude-opus-5-5', 'claude-sonnet-5', 'claude-sonnet-5-5',
+}
+GPT_WITHOUT_NONE = {'gpt-6-astra', 'gpt-6.1-sol', 'gpt-6.2-astra', 'gpt-6.2-sol'}
 
 
 def main():
@@ -94,9 +100,11 @@ def main():
                     assert {item['id'] for item in jetbrains_models} == MODEL_IDS
                     snapshot = json.loads((ROOT / 'junie-models.json').read_text())
                     for model in jetbrains_models:
-                        assert model['limit']['context'] == 1000000
                         claude = model['id'].startswith('claude-')
-                        assert model['limit']['output'] == (64000 if model['id'] == 'claude-haiku-5-5' else 128000)
+                        bundled = next(item for item in snapshot['models'] if item['provider'] == ('Anthropic' if claude else 'OpenAI') and item['id'] == model['id'])
+                        assert model['limit']['context'] == (bundled['limits']['context'] or 1000000)
+                        fallback_output = 64000 if model['id'] == 'claude-haiku-5-5' else 128000
+                        assert model['limit']['output'] == (bundled['limits']['output'] or fallback_output)
                         assert model['package'] == ('@opencode/ai/providers/anthropic' if claude else '@opencode/ai/providers/openai-compatible/responses')
                         if claude:
                             assert model['settings']['effort'] == 'high'
@@ -105,12 +113,12 @@ def main():
                             assert 'Openai-Version' not in model.get('headers', {})
                             for field in ['store', 'parallel_tool_calls', 'include']:
                                 assert field not in model.get('body', {})
-                        prices = next(item['pricing'] for item in snapshot['models'] if item['provider'] == ('Anthropic' if claude else 'OpenAI') and item['id'] == model['id'])
+                        prices = bundled['pricing']
                         assert model['cost'][0]['input'] == prices['input']
                         assert model['cost'][0]['output'] == prices['output']
                         assert model['cost'][0]['cache'] == {'read': prices['cacheRead'], 'write': prices['cacheWrite']}
                         efforts = {'low', 'medium', 'high', 'xhigh', 'max'}
-                        if not claude and model['id'] not in {'gpt-6-astra', 'gpt-6.1-sol'}:
+                        if not claude and model['id'] not in GPT_WITHOUT_NONE:
                             efforts.add('none')
                         if model['id'] == 'claude-haiku-5-5':
                             efforts.remove('max')

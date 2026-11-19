@@ -40,12 +40,16 @@ python3 tools/extract_junie_models.py --provider OpenAI --output /tmp/opencode/j
 # Reproduce a published release instead of selecting latest.
 python3 tools/extract_junie_models.py --version 3813.7 --output /tmp/opencode/junie-3813.7-models.json
 
+# Extract the latest official nightly. Add --version to pin a nightly build.
+python3 tools/extract_junie_models.py --nightly --output /tmp/opencode/junie-nightly-models.json
+
 # Select a platform explicitly and use an installed Java executable.
 python3 tools/extract_junie_models.py --platform linux-aarch64 --java /path/to/java
 ```
 
 Downloads are cached under `/tmp/opencode/junie-model-pricing` and reverified on
-reuse. Override with `--cache-dir`. For a different-platform archive, supply a
+reuse. Nightly bundles are cached separately from stable bundles. Override the
+cache root with `--cache-dir`. For a different-platform archive, supply a
 host-compatible `--java` executable. If the bundle contains runtime symlinks, use
 an installed Java rather than extracting the bundled runtime.
 
